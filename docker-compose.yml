@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: Shikiga_Detection_API
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DATABASE_NAME=solana_attack_detection
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./models:/app/models
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    image: mongo:5.0
+    container_name: solana_attack_detection_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: solana_attack_detection_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mongodb_data:
+  redis_data:
